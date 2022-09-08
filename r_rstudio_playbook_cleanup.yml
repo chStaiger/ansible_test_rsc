@@ -1,6 +1,6 @@
 ---
 - name: Clean up results of first playbook
-  hosts: all
+  hosts: localhost
   gather_facts: true
   become: yes
   tasks:
