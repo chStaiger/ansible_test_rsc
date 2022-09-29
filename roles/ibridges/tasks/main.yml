@@ -1,7 +1,18 @@
+- name: Ensure a Desktop is installed
+  ansible.builtin.apt:
+    name: ubuntu-desktop
+    state: present
+
+- name: Install remote Desktop connection
+  ansible.builtin.apt:
+    name: xrdp
+    state: present
+
 - name: Check which python version is installed
   shell: "python3.10 --version"
   register: python_output
   ignore_errors: true
+
 - name: Print Python version
   debug:
     msg: "{{python_output.stdout_lines}}"
@@ -42,12 +53,17 @@
     name: python3.10-distutils
   when: python_output.stdout_lines | length > 0
 
+- name: Install PyQt5 dependencies
+  ansible.builtin.apt:
+    name: libxcb-xinerama0
+
 - name: Checkout git iBridges to /opt
   become: true
   git:
     repo: https://github.com/chStaiger/iBridges-Gui.git
     dest: /opt/iBridges
-    version: pyqt6
+    version: rsc-pyqt6
+    force: true
   when: python_output.stdout_lines | length > 0
 
 - name: Install pip requirements for iBridges
