@@ -1,3 +1,4 @@
+#Only for Ubuntu servers.
 - name: Ensure a Desktop is installed
   ansible.builtin.apt:
     name: ubuntu-desktop
@@ -44,8 +45,8 @@
 
 - name: Install pip
   shell: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
-- name: Upgrade pip
-  ansible.builtin.command: python3.10 -m pip install --upgrade pip
+- name: Upgrade pip, setuptools and wheel
+  ansible.builtin.command: python3.10 -m pip install --upgrade pip setuptools wheel
   when: python_output.stdout_lines | length > 0
 
 - name: Install distutils
@@ -56,6 +57,9 @@
 - name: Install PyQt5 dependencies
   ansible.builtin.apt:
     name: libxcb-xinerama0
+- name: install PyQt6 depdencies
+  ansible.builtin.apt:
+    name: build-essential, libgl1-mesa-dev
 
 - name: Checkout git iBridges to /opt
   become: true
