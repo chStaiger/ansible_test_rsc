@@ -1,0 +1,23 @@
+---
+- name: Create install directory /opt/rapid7
+  file:
+    path: /opt/rapid7
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+
+- name: Copy install script to /opt/rapid7
+  copy: 
+    src: "agent_installer-x86_64.sh"
+    dest: "/opt/rapid7/agent_installer-x86_64.sh"
+    mode: u+x
+
+- name: Debug
+  debug:
+     var: token
+
+- name: Install rapid7
+  command: ./agent_installer-x86_64.sh install_start --token {{token}}
+  args:
+    chdir: "/opt/rapid7"
