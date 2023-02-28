@@ -1,0 +1,62 @@
+---
+- name: Install python 3.10 and all requirements for the iBridges Gui
+  hosts: all
+  gather_facts: true
+  become: yes
+  tasks:
+    - name: Check which python version is installed
+      shell: "python3.10 --version"
+      register: python_output
+      ignore_errors: true
+    - name: Print Python version
+      debug:
+        msg: "{{python_output.stdout_lines}}"
+
+    - name: Install software-properties-common
+      ansible.builtin.apt:
+        name: software-properties-common
+
+    - name: Add ppa key for python 3.10
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:deadsnakes/ppa'
+        state: present
+      when: python_output.stdout_lines | length == 0
+
+    - name: Install Python 3.10.6
+      ansible.builtin.apt:
+        name: python3.10
+      when: python_output.stdout_lines | length == 0
+
+    - name: Check which python version is installed
+      shell: "python3.10 --version"
+      register: python_output
+      ignore_errors: true
+    - name: Print Python version
+      debug:
+        msg: "{{python_output}}"
+
+    - name: Install pip
+      shell: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+    - name: Upgrade pip
+      ansible.builtin.command: python3.10 -m pip install --upgrade pip
+      when: python_output.stdout_lines | length > 0
+
+    - name: Install distutils
+      ansible.builtin.apt:
+        name: python3.10-distutils
+      when: python_output.stdout_lines | length > 0
+
+    - name: Checkout git iBridges to /opt
+      git:
+        repo: https://github.com/chStaiger/iBridges-Gui.git
+        dest: /opt/iBridges
+        version: pyqt6
+      when: python_output.stdout_lines | length > 0
+
+    - name: Install pip requirements for iBridges
+      ansible.builtin.command: python3.10 -m pip install -r /opt/iBridges/requirements.txt
+      when: python_output.stdout_lines | length > 0
+
+    - name: Make menu button for iBridges
+
