@@ -24,7 +24,7 @@
 
 - name: Set attributes
   ansible.builtin.set_fact:
-    attributes: "{{ ['ResearchCloud', co_name, workspace_name.stdout] | map('regex_replace', '[^A-Za-z0-9_\\-=]', '') | list | join(',') }}"
+    attributes: "{{ ['SurfResearchCloud', co_name, workspace_name.stdout] | map('regex_replace', '[^A-Za-z0-9_\\-=]', '') | list | join(',') }}"
 
 - name: Debug
   debug:
