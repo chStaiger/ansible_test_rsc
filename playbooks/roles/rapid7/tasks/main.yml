@@ -18,6 +18,11 @@
   register: workspace_name
   changed_when: false
 
+- name: Get CO name
+  ansible.builtin.shell: jq -r .co_name < /etc/rsc/workspace.json
+  register: co_name
+  changed_when: false
+
 - name: Debug
   debug:
      var: workspace_name

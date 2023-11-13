@@ -6,8 +6,5 @@
   vars_prompt:
     - name: token
       prompt: Enter token
-    - name: co_name
-      prompt: Enter CO name
-      private: false
   roles:
     - rapid7
