@@ -18,21 +18,22 @@
   register: workspace_name
   changed_when: false
 
+- name: Get CO name
+  ansible.builtin.shell: jq -r .co_name < /etc/rsc/workspace.json
+  register: co_name
+  changed_when: false
+
 - name: Debug
   debug:
      var: workspace_name
 
 - name: Set attributes
   ansible.builtin.set_fact:
-    attributes: "{{ ['SurfResearchCloud', co_name, workspace_name.stdout] | map('regex_replace', '[^A-Za-z0-9_\\-=]', '') | list | join(',') }}"
+    attributes: "{{ ['SurfResearchCloud', co_name.stdout, workspace_name.stdout] | map('regex_replace', '[^A-Za-z0-9_\\-=]', '') | list | join(',') }}"
 
 - name: Debug
   debug:
     var: attributes
-
-- name: Debug
-  debug:
-     var: token
 
 - name: Install rapid7
   command: ./agent_installer-x86_64.sh install_start --token {{token}} --attributes "{{ attributes }}"
